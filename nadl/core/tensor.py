@@ -2,11 +2,15 @@ import numpy as np
 import warnings
 from typing import Union, NamedTuple, Callable, List
 
-from utils.typechecks import dataTypeCheck
+from ..utils.typechecks import dataTypeCheck
+from cpu_ops import Ops as c_ops
+from gpu_ops import Ops as g_ops
 
-###############  Define Type Checks  ############### 
-AllowedDataType = Union[np.ndarray, list, float]
+###############  Define Type Checks  ################
+AllowedDataType = Union[np.ndarray, list, float] 
 CanBeTensorfied = Union['Tensor', np.ndarray, float]
+AllowedDataTypeTuple = (np.ndarray, list, float)
+CanBeTensorfiedTuple = ('Tensor', np.ndarray, float)
 
 class Dependency(NamedTuple):
     """
@@ -18,7 +22,7 @@ class Dependency(NamedTuple):
         _backward: Gradient Calculation function for necessary operation
     """
     tensor: 'Tensor'
-    _backward: Callable[[np.ndarray], np.ndarray]
+    backward_fn: Callable[[np.ndarray], np.ndarray]
 
 class Tensor:
     def __init__(
@@ -38,7 +42,7 @@ class Tensor:
         """
 
         # Sanity Check data type
-        self.__data = dataTypeCheck(data, AllowedDataType)
+        self.__data = dataTypeCheck(data, AllowedDataTypeTuple)
 
         # Initialize other properties
         self.requires_grad = requires_grad
@@ -67,16 +71,25 @@ class Tensor:
 
         self.__data = new_data
         self.grad = None
+
     def __repr__(self):
         return f"Tensor<shape:{self.__data.shape}, requires_grad:{self.requires_grad}>"
 
+    def zero_grad(self) -> None:
+        """
+            Set the gradient back to a Zero Array
+        """
+        self.grad = np.zeros_like(self.data, dtype=np.float64)
+    
     @property
     def data(self) -> np.ndarray:
         return self.__data
+    
+    def __add__(self, tensor):
+        """Addition operation that add external tensor to out tensor
 
-    def zero_grad(self) -> None:
+        Args:
+            tensor ([Tensor]): Must be of a Type Tensor
         """
-            Set the gradient back to a Zero Tensor
-        """
-        self.grad = Tensor(data=np.zeros_like(self.data, dtype=np.float64))
-        
+        output = c_ops.add(self, tensor, Tensor)
+        return output

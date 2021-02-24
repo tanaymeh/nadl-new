@@ -1,11 +1,10 @@
 import numpy as np
-from typing import Union
 
-def dataTypeCheck(data, union):
-    if not isinstance(data, union):
-        raise ValueError(f"Given data is of wrong datatype. Given datatype: {type(data)}")
+def dataTypeCheck(data, types):
+    if not isinstance(data, types):
+        raise ValueError(f"Wrong Data Type Provided: {type(data)}")
     else:
-        if isinstance(data, union):
-            return data
-        else:
+        if isinstance(data, types[1:]):
             return np.array(data)
+        else:
+            return data
