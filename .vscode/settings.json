@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/home/heytanay/anaconda3/envs/nadlenv/bin/python"
+    "python.pythonPath": "/home/heytanay/anaconda3/envs/nadlenv/bin/python",
+    "python.linting.enabled": false
 }

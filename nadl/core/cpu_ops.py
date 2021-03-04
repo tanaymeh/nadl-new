@@ -12,9 +12,9 @@ class Ops:
         This will be called both via overloaded op and via math module.
 
         Args:
-            tensor1 ([Tensor]): First Tensor ('self' in overloaded op)
-            tensor2 ([Tensor]): Second Tensor ('tensor' in overloaded op)
-            TensorDataTypeWrapper ([class Tensor]): Used for wrapping the Output
+            tensor1 (Tensor): First Tensor ('self' in overloaded op)
+            tensor2 (Tensor): Second Tensor ('tensor' in overloaded op)
+            TensorDataTypeWrapper (Tensor): Used for wrapping the Output
         """
         # Extract inputs from passed arguments list
         tensor1: 'Tensor' = args[0]
@@ -66,8 +66,8 @@ class Ops:
         This will be called both via overloaded op and via math module.
 
         Args:
-            tensor1 ([Tensor]): First Tensor ('self' in overloaded op)
-            tensor2 ([Tensor]): Second Tensor ('tensor' in overloaded op)
+            tensor1 (Tensor): First Tensor ('self' in overloaded op)
+            tensor2 (Tensor): Second Tensor ('tensor' in overloaded op)
         """
         # Extract inputs from passed arguments list
         tensor1: 'Tensor' = args[0]
@@ -89,8 +89,8 @@ class Ops:
         This will be called via overloaded op only (in most cases).
 
         Args:
-            tensor ([Tensor]): First Tensor ('self' in overloaded op)
-            TensorDataTypeWrapper ([class Tensor]): Used for wrapping the Output
+            tensor (Tensor): First Tensor ('self' in overloaded op)
+            TensorDataTypeWrapper (Tensor): Used for wrapping the Output
         """
         # Extract inputs from args
         tensor: 'Tensor' = args[0]
@@ -110,4 +110,5 @@ class Ops:
             requires_grad=requires_grad,
             parents=parent
         )
+
         

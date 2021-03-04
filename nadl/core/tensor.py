@@ -78,7 +78,23 @@ class Tensor:
         """Addition operation that add external tensor to out tensor
 
         Args:
-            tensor ([Tensor]): Must be of a Type Tensor
+            tensor (Tensor): Must be of a Type Tensor
         """
         output = c_ops.add(self, tensor, Tensor)
         return output
+    
+    def __neg__(self):
+        """Negative operation that does what it says it does.
+        """
+
+        output = c_ops.negative(self, Tensor)
+        return output
+
+    def __sub__(self, tensor):
+        """Subtraction operation that Subtracts 'tensor' from 'self' tensor
+
+        Args:
+            tensor (Tensor): Another Tensor
+        """
+
+        output = c_ops.sub(self, tensor, Tensor)
