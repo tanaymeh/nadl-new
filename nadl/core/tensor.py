@@ -2,27 +2,16 @@ import numpy as np
 import warnings
 from typing import Union, NamedTuple, Callable, List
 
-from ..utils.typechecks import dataTypeCheck
-from cpu_ops import Ops as c_ops
-from gpu_ops import Ops as g_ops
+from ..utils.checks import dataTypeCheck, gradDepCheck
+from ..core.dep import Dependency
+from ..core.cpu_ops import Ops as c_ops
+# from gpu_ops import Ops as g_ops
 
 ###############  Define Type Checks  ################
 AllowedDataType = Union[np.ndarray, list, float] 
 CanBeTensorfied = Union['Tensor', np.ndarray, float]
 AllowedDataTypeTuple = (np.ndarray, list, float)
 CanBeTensorfiedTuple = ('Tensor', np.ndarray, float)
-
-class Dependency(NamedTuple):
-    """
-    All Tensors (realistically) have a dependency.
-    They will be passed around when doing operations.
-
-    Members:
-        tensor: Tensor Instance
-        _backward: Gradient Calculation function for necessary operation
-    """
-    tensor: 'Tensor'
-    backward_fn: Callable[[np.ndarray], np.ndarray]
 
 class Tensor:
     def __init__(
@@ -73,7 +62,7 @@ class Tensor:
         self.grad = None
 
     def __repr__(self):
-        return f"Tensor<shape:{self.__data.shape}, requires_grad:{self.requires_grad}>"
+        return f"Tensor<shape={self.__data.shape}, requires_grad={self.requires_grad}>"
 
     def zero_grad(self) -> None:
         """
