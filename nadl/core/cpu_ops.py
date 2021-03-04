@@ -61,10 +61,53 @@ class Ops:
         )
 
     def sub(*args):
-        pass
+        """
+        This is a generic implementations of Subtraction Operation.
+        This will be called both via overloaded op and via math module.
+
+        Args:
+            tensor1 ([Tensor]): First Tensor ('self' in overloaded op)
+            tensor2 ([Tensor]): Second Tensor ('tensor' in overloaded op)
+        """
+        # Extract inputs from passed arguments list
+        tensor1: 'Tensor' = args[0]
+        tensor2: 'Tensor' = args[1]
+
+        # Subtraction is basically addition but in negatives.
+        output = tensor1 + -tensor2
+        return output
 
     def matmul(*args):
         pass
 
     def pow(*args):
         pass
+
+    def negative(*args):
+        """
+        This is a generic implementations of Negative Operation.
+        This will be called via overloaded op only (in most cases).
+
+        Args:
+            tensor ([Tensor]): First Tensor ('self' in overloaded op)
+            TensorDataTypeWrapper ([class Tensor]): Used for wrapping the Output
+        """
+        # Extract inputs from args
+        tensor: 'Tensor' = args[0]
+        TensorDataTypeWrapper: 'Tensor' = args[1]
+
+        # Operations
+        data =  - tensor.data
+        requires_grad = tensor.requires_grad
+
+        if requires_grad:
+            parent = [Dependency(tensor, lambda x: -x)]
+        else:
+            parent = []
+        
+        return TensorDataTypeWrapper(
+            data=data,
+            requires_grad=requires_grad,
+            parents=parent
+        )
+        
