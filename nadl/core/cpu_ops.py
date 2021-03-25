@@ -82,7 +82,34 @@ class Ops:
                 f"Matrices of dims: {tensor1.shape} and {tensor2.shape} are not compatible"
             )
             
-
+        # Now get the output (may take some time.)
+        # TODO: Implement a numba matmul operation here for faster speed
+        # ? The Numpy matmul operation isn't supposed to throw an error
+        output = np.matmul(tensor1.data, tensor2.data)
+        
+        # See if both do require gradients
+        t1_rg, t2_rg = gradDepCheck(tensor1), gradDepCheck(tensor2)
+        requires_grad = t1_rg or t2_rg
+        
+        parent: List[Dependency] = []
+        
+        # Start operation for matmul AD
+        if t1_rg:
+            def _t1_grad_fn(grad: np.ndarray):
+                return np.matmul(grad, tensor2.data.T)
+            parent.append(Dependency(tensor1, _t1_grad_fn))
+            
+        if t2_rg:
+            def _t2_grad_fn(grad: np.ndarray):
+                return np.matmul(tensor1.data.T, grad)
+            parent.append(Dependency(tensor2, _t2_grad_fn))
+        
+        return TensorDataTypeWrapper(
+            data=output,
+            requires_grad=requires_grad,
+            parents=parent
+        )       
+        
     def sub(*args):
         """
         This is a generic implementations of Subtraction Operation.
