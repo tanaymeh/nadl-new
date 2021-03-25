@@ -156,5 +156,5 @@ class Ops:
             parents=parent
         )
 
-    def pow(*args):
+    def power(*args):
         raise NotImplemented("Power function is not yet implemented.")
