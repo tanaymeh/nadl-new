@@ -22,13 +22,14 @@ class Ops:
         tensor2: 'Tensor' = args[1]
         TensorDataTypeWrapper: 'Tensor' = args[2]
 
+        # Get the output and do gradient dependency checks
         output = tensor1.data + tensor2.data
         t1_rg, t2_rg = gradDepCheck(tensor1), gradDepCheck(tensor2)
         requires_grad = t1_rg or t2_rg
 
         parent: List[Dependency] = []
 
-        # Start Operations for Backward 
+        # Start Operations for Backward
         if t1_rg:
             def _t1_grad_fn(grad: np.ndarray):
                 ndims_add = grad.ndims - tensor1.grad.ndim
@@ -156,4 +157,4 @@ class Ops:
         )
 
     def pow(*args):
-        pass
+        raise NotImplemented("Power function is not yet implemented.")

@@ -25,4 +25,4 @@ class validateMatrixOp:
         
         Given list of Tensors will be checked in accordance. Pass them in right order!
         """
-        pass
+        raise NotImplementedError("Function: <variableMatmulSizeCheck> is not yet implemented.")
