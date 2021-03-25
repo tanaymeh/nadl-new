@@ -75,7 +75,8 @@ class Tensor:
         return self.__data
     
     def __add__(self, tensor):
-        """Addition operation that add external tensor to out tensor
+        """
+        Addition operation that add external tensor to out tensor
 
         Args:
             tensor (Tensor): Must be of a Type Tensor
@@ -84,17 +85,38 @@ class Tensor:
         return output
     
     def __neg__(self):
-        """Negative operation that does what it says it does.
         """
-
+        Negative operation that does what it says it does.
+        """
         output = c_ops.negative(self, Tensor)
         return output
 
     def __sub__(self, tensor):
-        """Subtraction operation that Subtracts 'tensor' from 'self' tensor
+        """
+        Subtraction operation that Subtracts 'tensor' from 'self' tensor
 
         Args:
             tensor (Tensor): Another Tensor
         """
-
         output = c_ops.sub(self, tensor, Tensor)
+        return output
+    
+    def __pow__(self, power: Union[int, float]):
+        """
+        Power operation that raises the current tensor to the power of "power"
+        
+        Args:
+            power (int | float): Power to be raised to. Can only be integer and float
+        """
+        output = c_ops.pow(self, power, Tensor)
+        return output
+
+    def __div__(self, tensor):
+        """
+        Divides a Tensor by another Tensor
+        
+        Args: tensor (Tensor): Tensor that comes as the denominator
+        """
+        raise NotImplementedError("Division Operation is not yet implemented.")
+        output = c_ops.div(self, tensor, Tensor)
+        return output

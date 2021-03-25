@@ -3,6 +3,7 @@ import numba
 from typing import List
 
 from ..utils.checks import gradDepCheck
+from ..utils.other import validateMatrixOp
 from ..core.dep import Dependency
 
 class Ops:
@@ -59,6 +60,28 @@ class Ops:
             requires_grad=requires_grad,
             parents=parent
         )
+        
+    def matmul(*args):
+        """
+        This is a generic implementation of Matrix Multiplication Operation.
+        This will be called both via overloaded op and via math module.
+
+        Args:
+            tensor1 (Tensor): First Tensor ('self' in overloaded op)
+            tensor2 (Tensor): Second Tensor ('tensor' in overloaded op)
+        """
+        # Extract inputs from passed arguments list
+        tensor1: 'Tensor' = args[0]
+        tensor2: 'Tensor' = args[1]
+        TensorDataTypeWrapper: 'Tensor' = args[2]
+        
+        # Validate the sizes of the matrices for compatibility
+        isCompatible = validateMatrixOp.matmulSizeCheck(tensor1, tensor2)
+        if not isCompatible:
+            raise ValueError(
+                f"Matrices of dims: {tensor1.shape} and {tensor2.shape} are not compatible"
+            )
+            
 
     def sub(*args):
         """
@@ -76,12 +99,6 @@ class Ops:
         # Subtraction is basically addition but in negatives.
         output = tensor1 + -tensor2
         return output
-
-    def matmul(*args):
-        pass
-
-    def pow(*args):
-        pass
 
     def negative(*args):
         """
@@ -111,4 +128,5 @@ class Ops:
             parents=parent
         )
 
-        
+    def pow(*args):
+        pass
