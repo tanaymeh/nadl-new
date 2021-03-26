@@ -1,6 +1,6 @@
 import numpy as np
 import warnings
-from typing import Union, NamedTuple, Callable, List
+from typing import Union, NamedTuple, Callable, List, Optional
 
 from ..utils.checks import dataTypeCheck, gradDepCheck
 from ..core.dep import Dependency
@@ -37,7 +37,7 @@ class Tensor:
         self.requires_grad = requires_grad
         self.parents = parents or []
         self.shape = self.__data.shape
-        self.grad = None
+        self.grad: Optional['Tensor'] = None
 
         # Initialize gradients as Tensor itself
         # This way we can calculate n-order derivatives
@@ -68,7 +68,7 @@ class Tensor:
         """
             Set the gradient back to a Zero Array
         """
-        self.grad = np.zeros_like(self.data, dtype=np.float64)
+        self.grad = Tensor(np.zeros_like(self.data, dtype=np.float64))
     
     @property
     def data(self) -> np.ndarray:
@@ -120,3 +120,23 @@ class Tensor:
         raise NotImplementedError("Division Operation is not yet implemented.")
         output = c_ops.div(self, tensor, Tensor)
         return output
+    
+    def backward(self, grad: 'Tensor'=None) -> None:
+        """
+        Performs gradient calculation using automatic differentiation
+        """
+        # First check if gradient calculation is allowed or not
+        if not self.requires_grad:
+            raise ValueError("Cannot calculate gradient on a constant tensor.")
+        
+        if grad is None:
+            if self.shape == ():
+                grad = Tensor(1.0)
+            else:
+                raise RuntimeError("Gradient must be satisfied for a Non-Zero tensor")
+        
+        self.grad.data = self.grad.data + grad.data
+        
+        for parent in self.parents:
+            backward_grad = parent.backward_fn(grad.data)
+            parent.tensor.backward(Tensor(backward_grad))

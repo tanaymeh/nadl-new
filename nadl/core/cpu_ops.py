@@ -85,7 +85,7 @@ class Ops:
             
         # Now get the output (may take some time.)
         # TODO: Implement a numba matmul operation here for faster speed
-        # ? The Numpy matmul operation isn't supposed to throw an error
+        # ? The Numpy matmul operation isn't supposed to throw an error here
         output = np.matmul(tensor1.data, tensor2.data)
         
         # See if both do require gradients
