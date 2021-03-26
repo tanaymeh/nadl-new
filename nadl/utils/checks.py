@@ -23,8 +23,19 @@ def dataTypeCheck(data, types):
         
 def gradDepCheck(tensor):
     """
-    Checks if the given tensor doesn't require gradients
+    Checks if the given tensor requires gradients
     """
     if tensor.requires_grad:
-        return False
-    return True
+        return True
+    return False
+
+def numeralGradientDependencyCheck(*args):
+    """
+    Just like gradDepCheck() except it works on any number of Tensors as argument
+    
+    Returns a list of True or False corresponding to that gradient's status
+    """
+    gradientStatus = []
+    for tensor in args:
+        gradientStatus.append(gradDepCheck(tensor))
+    return gradientStatus

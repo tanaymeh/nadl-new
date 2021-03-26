@@ -1,8 +1,8 @@
 import numpy as np
 import warnings
-from typing import Union, NamedTuple, Callable, List, Optional
+from typing import Union, List, Optional
 
-from ..utils.checks import dataTypeCheck, gradDepCheck
+from ..utils.checks import dataTypeCheck
 from ..core.dep import Dependency
 from ..core.cpu_ops import Ops as c_ops
 # from gpu_ops import Ops as g_ops
@@ -37,7 +37,7 @@ class Tensor:
         self.requires_grad = requires_grad
         self.parents = parents or []
         self.shape = self.__data.shape
-        self.grad: Optional['Tensor'] = None
+        self.grad: Optional[Union[np.ndarray]] = None
 
         # Initialize gradients as Tensor itself
         # This way we can calculate n-order derivatives
@@ -67,8 +67,10 @@ class Tensor:
     def zero_grad(self) -> None:
         """
             Set the gradient back to a Zero Array
+            
+            # TODO Enabling second+ order gradients throw an error
         """
-        self.grad = Tensor(np.zeros_like(self.data, dtype=np.float64))
+        self.grad = np.zeros_like(self.data, dtype=np.float64)
     
     @property
     def data(self) -> np.ndarray:
@@ -121,7 +123,7 @@ class Tensor:
         output = c_ops.div(self, tensor, Tensor)
         return output
     
-    def backward(self, grad: 'Tensor'=None) -> None:
+    def backward(self, grad: np.ndarray=None) -> None:
         """
         Performs gradient calculation using automatic differentiation
         """
@@ -131,12 +133,12 @@ class Tensor:
         
         if grad is None:
             if self.shape == ():
-                grad = Tensor(1.0)
+                grad = np.array([1.0])
             else:
-                raise RuntimeError("Gradient must be satisfied for a Non-Zero tensor")
+                raise RuntimeError("Gradient must be specified for a Non-Zero tensor")
         
-        self.grad.data = self.grad.data + grad.data
+        self.grad = self.grad + grad
         
         for parent in self.parents:
-            backward_grad = parent.backward_fn(grad.data)
+            backward_grad = parent.backward_fn(grad)
             parent.tensor.backward(Tensor(backward_grad))

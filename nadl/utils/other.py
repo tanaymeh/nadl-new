@@ -1,5 +1,4 @@
 import numpy as np
-from nadl.core.tensor import Tensor
 from typing import List
 
 class validateMatrixOp:
@@ -7,7 +6,7 @@ class validateMatrixOp:
     Bunch of functions to validation matrix operations
     """
     
-    def matmulSizeCheck(tensor1: Tensor, tensor2: Tensor):
+    def matmulSizeCheck(tensor1: 'Tensor', tensor2: 'Tensor'):
         """Checks if given 2 tensors can be multiplied or not.
 
         Args:
@@ -19,7 +18,7 @@ class validateMatrixOp:
         else:
             return True 
     
-    def variableMatmulSizeCheck(*args: List[Tensor]):
+    def variableMatmulSizeCheck(*args: List['Tensor']):
         """
         Checks if the given sequence of tensors are multiplications compatible
         

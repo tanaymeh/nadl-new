@@ -2,7 +2,7 @@ import numpy as np
 import numba
 from typing import List
 
-from ..utils.checks import gradDepCheck
+from ..utils.checks import numeralGradientDependencyCheck
 from ..utils.other import validateMatrixOp
 from ..core.dep import Dependency
 
@@ -24,7 +24,9 @@ class Ops:
 
         # Get the output and do gradient dependency checks
         output = tensor1.data + tensor2.data
-        t1_rg, t2_rg = gradDepCheck(tensor1), gradDepCheck(tensor2)
+        t1_rg, t2_rg = numeralGradientDependencyCheck(tensor1, tensor2)
+        # print(f"T1: {t1_rg}")
+        # print(f"T2: {t2_rg}")
         requires_grad = t1_rg or t2_rg
 
         parent: List[Dependency] = []
@@ -89,7 +91,7 @@ class Ops:
         output = np.matmul(tensor1.data, tensor2.data)
         
         # See if both do require gradients
-        t1_rg, t2_rg = gradDepCheck(tensor1), gradDepCheck(tensor2)
+        t1_rg, t2_rg = numeralGradientDependencyCheck(tensor1, tensor2)
         requires_grad = t1_rg or t2_rg
         
         parent: List[Dependency] = []
