@@ -11,5 +11,7 @@ print(f"Tensor b: {b}")
 c = a + b
 c.backward()
 
+print(a,b,c)
+
 print(a.grad)
 print(b.grad)

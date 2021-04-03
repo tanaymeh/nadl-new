@@ -1,6 +1,6 @@
 import numpy as np
 import numba
-from typing import List
+from typing import List, Any
 
 from ..utils.checks import numeralGradientDependencyCheck
 from ..utils.other import validateMatrixOp
@@ -25,8 +25,6 @@ class Ops:
         # Get the output and do gradient dependency checks
         output = tensor1.data + tensor2.data
         t1_rg, t2_rg = numeralGradientDependencyCheck(tensor1, tensor2)
-        # print(f"T1: {t1_rg}")
-        # print(f"T2: {t2_rg}")
         requires_grad = t1_rg or t2_rg
 
         parent: List[Dependency] = []
@@ -74,9 +72,9 @@ class Ops:
             tensor2 (Tensor): Second Tensor ('tensor' in overloaded op)
         """
         # Extract inputs from passed arguments list
-        tensor1: 'Tensor' = args[0]
-        tensor2: 'Tensor' = args[1]
-        TensorDataTypeWrapper: 'Tensor' = args[2]
+        tensor1: Any = args[0]
+        tensor2: Any = args[1]
+        TensorDataTypeWrapper: Any = args[2]
         
         # Validate the sizes of the matrices for compatibility
         isCompatible = validateMatrixOp.matmulSizeCheck(tensor1, tensor2)
