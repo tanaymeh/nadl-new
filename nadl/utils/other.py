@@ -10,8 +10,8 @@ class validateMatrixOp:
         """Checks if given 2 tensors can be multiplied or not.
 
         Args:
-            tensor1 (Tensor): [description]
-            tensor2 (Tensor): [description]
+            tensor1 (Tensor): First Tensor
+            tensor2 (Tensor): Second Tensor
         """
         if tensor1.shape[1] != tensor2.shape[0]:
             return False
@@ -24,4 +24,5 @@ class validateMatrixOp:
         
         Given list of Tensors will be checked in accordance. Pass them in right order!
         """
+        
         raise NotImplementedError("Function: <variableMatmulSizeCheck> is not yet implemented.")
